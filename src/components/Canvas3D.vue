@@ -40,8 +40,14 @@ const { snapPositionToGrid, checkFaceSnap } = useSnapping();
 const { setViewPreset, focusOnSelection } = useCamera(cameraRef, sceneRef);
 const { handleKeyDown } = useKeyboardShortcuts();
 
+const onDraggingChanged = (event) => {
+  orbitControls.enabled = !event.value;
+};
+
+
 let orbitControls: OrbitControls | null = null;
 let transformControls: TransformControls | null = null;
+let transformControlsHelper: THREE.Object3D | null = null;
 let selectedPartForTransform: string | null = null;
 
 onMounted(() => {
@@ -56,7 +62,15 @@ onMounted(() => {
     orbitControls.dampingFactor = 0.05;
 
     transformControls = new TransformControls(cameraRef.value, rendererRef.value.domElement);
-    sceneRef.value.add(transformControls);
+    transformControlsHelper = transformControls.getHelper();
+    
+    // Add to scene so the gizmo renders
+    if (sceneRef.value) {
+      sceneRef.value.add(transformControlsHelper);
+    }
+
+    // Hide transform controls in select mode
+    transformControlsHelper.visible = false;
 
     transformControls.addEventListener('dragging-changed', (event: any) => {
       if (orbitControls) {
@@ -136,9 +150,15 @@ onMounted(() => {
   const animate = () => {
     animationFrameId = requestAnimationFrame(animate);
     if (orbitControls) orbitControls.update();
-    if (transformControls && settingsStore.transformMode !== 'select') {
-      transformControls.mode =
-        settingsStore.transformMode === 'move' ? 'translate' : 'rotate';
+    if (transformControls) {
+      // Show/hide transform controls based on mode
+      transformControls.visible = settingsStore.transformMode !== 'select';
+      transformControlsHelper.visible = settingsStore.transformMode !== 'select';
+      
+      if (settingsStore.transformMode !== 'select') {
+        transformControls.mode =
+          settingsStore.transformMode === 'move' ? 'translate' : 'rotate';
+      }
     }
     if (rendererRef.value && sceneRef.value && cameraRef.value) {
       rendererRef.value.render(sceneRef.value, cameraRef.value);
@@ -171,11 +191,16 @@ watch(() => sceneStore.selectedIds, () => {
   if (selected.length > 0 && transformControls) {
     const mesh = meshMapRef.value.get(selected[0]);
     if (mesh) {
+      // Ensure transform controls is visible if not in select mode
       transformControls.attach(mesh);
+      if (settingsStore.transformMode !== 'select') {
+        transformControls.visible = true;
+      }
       selectedPartForTransform = selected[0];
     }
   } else if (transformControls) {
     transformControls.detach();
+    transformControls.visible = false;
     selectedPartForTransform = null;
   }
   updateOutline();
@@ -187,6 +212,14 @@ watch(() => settingsStore.gridEnabled, () => {
 
 watch(() => settingsStore.xrayMode, () => {
   updateXrayMode();
+});
+
+watch(() => settingsStore.transformMode, () => {
+  if (transformControls) {
+    const shouldShow = settingsStore.transformMode !== 'select' && 
+                       Array.from(sceneStore.selectedIds).length > 0;
+    transformControls.visible = shouldShow;
+  }
 });
 
 const handleViewPreset = (preset: 'top' | 'front' | 'side' | 'iso') => {

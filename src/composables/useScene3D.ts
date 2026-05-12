@@ -112,15 +112,32 @@ export function useScene3D(canvasRefArg: any) {
     rendererRef.value = renderer;
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Reduced slightly to let directional lights do more work
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(100, 100, 100);
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
+    // Key light - primary light source from upper front-right
+    const directionalLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+    directionalLight1.position.set(150, 200, 100);
+    directionalLight1.shadow.mapSize.width = 2048;
+    directionalLight1.shadow.mapSize.height = 2048;
+    directionalLight1.castShadow = true;
+    scene.add(directionalLight1);
+
+    // Fill light - softer light from the left to reduce harsh shadows
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.45);
+    directionalLight2.position.set(-200, 80, -50);
+    directionalLight2.shadow.mapSize.width = 2048;
+    directionalLight2.shadow.mapSize.height = 2048;
+    directionalLight2.castShadow = true;
+    scene.add(directionalLight2);
+
+    // Rim/back light - from below-rear to add depth and separate objects from background
+    const directionalLight3 = new THREE.DirectionalLight(0xffffff, 0.35);
+    directionalLight3.position.set(0, -120, -200);
+    directionalLight3.shadow.mapSize.width = 2048;
+    directionalLight3.shadow.mapSize.height = 2048;
+    directionalLight3.castShadow = true;
+    scene.add(directionalLight3);
 
     // Grid
     updateGridHelper();

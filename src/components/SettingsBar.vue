@@ -44,8 +44,9 @@ const snapIncrement = computed({
     <div class="settings-group">
       <label>Snap Increment (in):</label>
       <select v-model.number="snapIncrement">
+        <option :value="0.25">1/4"</option>
+        <option :value="0.5">1/2"</option>
         <option :value="1">1"</option>
-        <option :value="3">3"</option>
         <option :value="6">6"</option>
         <option :value="12">12"</option>
       </select>

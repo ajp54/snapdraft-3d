@@ -11,6 +11,7 @@ import { useKeyboardShortcuts } from '../composables/useKeyboardShortcuts';
 import { useSceneStore } from '../stores/sceneStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useHistoryStore } from '../stores/historyStore';
+import { Object3D } from 'three';
 import Toolbar from './Toolbar.vue';
 import SettingsBar from './SettingsBar.vue';
 
@@ -40,17 +41,27 @@ const { snapPositionToGrid, checkFaceSnap } = useSnapping();
 const { setViewPreset, focusOnSelection } = useCamera(cameraRef, sceneRef);
 const { handleKeyDown } = useKeyboardShortcuts();
 
-const onDraggingChanged = (event) => {
-  orbitControls.enabled = !event.value;
+let orbitControls: OrbitControls | null = null;
+let transformControls: (TransformControls & Object3D) | null = null;
+let transformHelper: THREE.Object3D | null = null;
+let selectedPartForTransform: string | null = null;
+let mouseDownPos = { x: 0, y: 0 };
+let isDraggingGizmo = false;
+
+const DRAG_THRESHOLD = 4; // pixels
+
+const updateTransformControlsVisibility = () => {
+  if (!transformControls || !transformHelper) return;
+  const hasSelection = sceneStore.selectedIds.size > 0;
+  const isTransformMode = settingsStore.transformMode !== 'select';
+  const shouldBeActive = hasSelection && isTransformMode;
+  
+  transformHelper.visible = shouldBeActive;
+  transformControls.enabled = shouldBeActive;
 };
 
-
-let orbitControls: OrbitControls | null = null;
-let transformControls: TransformControls | null = null;
-let transformControlsHelper: THREE.Object3D | null = null;
-let selectedPartForTransform: string | null = null;
-
 onMounted(() => {
+  
   if (!canvasRef.value) return;
 
   initScene();
@@ -61,21 +72,18 @@ onMounted(() => {
     orbitControls.enableDamping = true;
     orbitControls.dampingFactor = 0.05;
 
-    transformControls = new TransformControls(cameraRef.value, rendererRef.value.domElement);
-    transformControlsHelper = transformControls.getHelper();
+    transformControls = new TransformControls(cameraRef.value, rendererRef.value.domElement) as TransformControls & Object3D;
+    transformHelper = transformControls.getHelper();
+    sceneRef.value.add(transformHelper);
     
-    // Add to scene so the gizmo renders
-    if (sceneRef.value) {
-      sceneRef.value.add(transformControlsHelper);
-    }
-
     // Hide transform controls in select mode
-    transformControlsHelper.visible = false;
+    transformControls.visible = false;
 
     transformControls.addEventListener('dragging-changed', (event: any) => {
       if (orbitControls) {
         orbitControls.enabled = !event.value;
       }
+      isDraggingGizmo = event.value
     });
 
     transformControls.addEventListener('change', () => {
@@ -85,16 +93,22 @@ onMounted(() => {
           const part = sceneStore.placedParts.find((p) => p.id === selectedPartForTransform);
           if (part) {
             let newPos = mesh.position.toArray() as [number, number, number];
-            newPos = snapPositionToGrid(newPos);
-
-            const otherMeshes = Array.from(meshMapRef.value.values()).filter(
-              (m) => m.userData.partId !== selectedPartForTransform
-            );
-            const snappedPos = checkFaceSnap(mesh, otherMeshes, new THREE.Vector3(...newPos));
-            if (snappedPos) {
-              newPos = snappedPos.toArray() as [number, number, number];
+            
+            // Only snap if snapping is enabled
+            if (settingsStore.snapEnabled) {
+              newPos = snapPositionToGrid(newPos);
+            
+              const otherMeshes = Array.from(meshMapRef.value.values()).filter(
+                (m) => m.userData.partId !== selectedPartForTransform
+              );
+              const snappedPos = checkFaceSnap(mesh, otherMeshes, new THREE.Vector3(...newPos));
+              if (snappedPos) {
+                newPos = snappedPos.toArray() as [number, number, number];
+              }
             }
-
+            
+            mesh.position.set(...newPos);
+          
             sceneStore.updatePart(selectedPartForTransform, {
               position: newPos,
               rotation: mesh.rotation.toArray().slice(0, 3) as [number, number, number],
@@ -122,19 +136,45 @@ onMounted(() => {
   };
 
   const handleMouseDown = (event: MouseEvent) => {
+    mouseDownPos = { x: event.clientX, y: event.clientY };
+
     if (settingsStore.transformMode === 'select' && sceneRef.value && cameraRef.value) {
       raycasterRef.value.setFromCamera(mouseRef.value, cameraRef.value);
       const intersects = raycasterRef.value.intersectObjects(sceneRef.value.children);
-      const clicked = intersects.find((obj: any) => obj.object instanceof THREE.Mesh);
+      const clicked = intersects.find((obj: any) => obj.object instanceof THREE.Mesh && obj.object.userData.partId);
 
       if (clicked) {
         const meshId = (clicked.object as any).userData.partId;
         selectMesh(meshId, !event.ctrlKey && !event.shiftKey);
-      } else if (!event.ctrlKey && !event.shiftKey) {
-        clearSelection();
-      }
+      } 
+      // else if (!event.ctrlKey && !event.shiftKey) {
+      //   clearSelection();
+      // }
     }
   };
+
+const handleMouseUp = (event: MouseEvent) => {
+  const dx = Math.abs(event.clientX - mouseDownPos.x);
+  const dy = Math.abs(event.clientY - mouseDownPos.y);
+  const wasDrag = dx > DRAG_THRESHOLD || dy > DRAG_THRESHOLD;
+
+  if (wasDrag || isDraggingGizmo) return; // Camera was being rotated, ignore
+
+  if (sceneRef.value && cameraRef.value) {
+    raycasterRef.value.setFromCamera(mouseRef.value, cameraRef.value);
+    const intersects = raycasterRef.value.intersectObjects(sceneRef.value.children, true);
+    const clicked = intersects.find((obj: any) =>
+      obj.object instanceof THREE.Mesh && obj.object.userData.partId
+    );
+
+    if (clicked) {
+      const meshId = clicked.object.userData.partId;
+      selectMesh(meshId, !event.ctrlKey && !event.shiftKey);
+    } else if (!event.ctrlKey && !event.shiftKey) {
+      clearSelection();
+    }
+  }
+};
 
   const handleKeyEvent = (event: KeyboardEvent) => {
     handleKeyDown(event);
@@ -143,23 +183,24 @@ onMounted(() => {
   if (canvasRef.value) {
     canvasRef.value.addEventListener('mousemove', handleMouseMove);
     canvasRef.value.addEventListener('mousedown', handleMouseDown);
+    canvasRef.value.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('keydown', handleKeyEvent);
   }
 
   let animationFrameId: number | null = null;
   const animate = () => {
     animationFrameId = requestAnimationFrame(animate);
+
     if (orbitControls) orbitControls.update();
+
     if (transformControls) {
-      // Show/hide transform controls based on mode
-      transformControls.visible = settingsStore.transformMode !== 'select';
-      transformControlsHelper.visible = settingsStore.transformMode !== 'select';
-      
-      if (settingsStore.transformMode !== 'select') {
-        transformControls.mode =
-          settingsStore.transformMode === 'move' ? 'translate' : 'rotate';
+      if (settingsStore.transformMode === 'move') {
+        transformControls.mode = 'translate';
+      } else if (settingsStore.transformMode === 'rotate') {
+        transformControls.mode = 'rotate';
       }
     }
+    
     if (rendererRef.value && sceneRef.value && cameraRef.value) {
       rendererRef.value.render(sceneRef.value, cameraRef.value);
     }
@@ -175,6 +216,7 @@ onMounted(() => {
     if (canvasRef.value) {
       canvasRef.value.removeEventListener('mousemove', handleMouseMove);
       canvasRef.value.removeEventListener('mousedown', handleMouseDown);
+      canvasRef.value.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('keydown', handleKeyEvent);
     }
     orbitControls?.dispose();
@@ -191,20 +233,19 @@ watch(() => sceneStore.selectedIds, () => {
   if (selected.length > 0 && transformControls) {
     const mesh = meshMapRef.value.get(selected[0]);
     if (mesh) {
-      // Ensure transform controls is visible if not in select mode
       transformControls.attach(mesh);
-      if (settingsStore.transformMode !== 'select') {
-        transformControls.visible = true;
-      }
+      // transformControls.visible = settingsStore.transformMode !== 'select';
+      updateTransformControlsVisibility();
       selectedPartForTransform = selected[0];
     }
   } else if (transformControls) {
     transformControls.detach();
-    transformControls.visible = false;
+    // transformControls.visible = false;
+    updateTransformControlsVisibility();
     selectedPartForTransform = null;
   }
   updateOutline();
-});
+}, { deep: true });
 
 watch(() => settingsStore.gridEnabled, () => {
   updateGridHelper();
@@ -216,9 +257,8 @@ watch(() => settingsStore.xrayMode, () => {
 
 watch(() => settingsStore.transformMode, () => {
   if (transformControls) {
-    const shouldShow = settingsStore.transformMode !== 'select' && 
-                       Array.from(sceneStore.selectedIds).length > 0;
-    transformControls.visible = shouldShow;
+    // transformControls.visible = settingsStore.transformMode !== 'select';
+    updateTransformControlsVisibility();
   }
 });
 

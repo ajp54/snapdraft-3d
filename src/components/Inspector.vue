@@ -128,7 +128,7 @@ const rotateBy90 = (axis: 'x' | 'y' | 'z') => {
   if (!selectedPart.value) return;
   const rot = [...selectedPart.value.rotation] as [number, number, number];
   const idx = axis === 'x' ? 0 : axis === 'y' ? 1 : 2;
-  rot[idx] += Math.PI / 2;
+  rot[idx] = (rot[idx] + Math.PI / 2) % (Math.PI * 2);
   historyStore.pushSnapshot();
   sceneStore.updatePart(selectedPart.value.id, { rotation: rot });
 };
@@ -217,7 +217,7 @@ const deletePart = () => {
 
       <!-- Dimensions -->
       <div class="section">
-        <div class="section-title">Dimensions (read-only)</div>
+        <div class="section-title">Dimensions</div>
         <div class="info-row">
           <span class="label">W × H × D:</span>
           <span class="value">
@@ -361,6 +361,7 @@ const deletePart = () => {
   border-radius: 4px;
   color: #fff;
   font-size: 12px;
+  min-width: 0;
 }
 
 .input-group input:focus {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import * as THREE from 'three';
 import { computed } from 'vue';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useHistoryStore } from '../stores/historyStore';
@@ -6,6 +7,10 @@ import { downloadFile, exportToJSON, saveToLocalStorage, importFromJSON } from '
 
 const settingsStore = useSettingsStore();
 const historyStore = useHistoryStore();
+
+const props = defineProps<{
+  scene: THREE.Scene | null;
+}>();
 
 const emit = defineEmits<{
   'view-preset': [preset: 'top' | 'front' | 'side' | 'iso'];
@@ -32,10 +37,40 @@ const transformMode = computed({
   set: (value) => settingsStore.setTransformMode(value),
 });
 
-const save = () => {
+const clearScene = () => {
+  if (!props.scene) return;
+  const toRemove = props.scene.children.filter(
+    obj => obj instanceof THREE.Mesh
+  );
+  toRemove.forEach(obj => props.scene!.remove(obj));
+};
+
+const save = async() => {
   saveToLocalStorage();
   const json = exportToJSON();
-  downloadFile(json, 'snapdraft-project.json', 'application/json');
+  // downloadFile(json, 'snapdraft-project.json', 'application/json');
+  if ((window as any).showSaveFilePicker) {
+    try {
+      const fileHandle = await (window as any).showSaveFilePicker({
+        suggestedName: 'snapdraft-project.json',
+        types: [{
+          description: 'JSON File',
+          accept: { 'application/json': ['.json'] },
+        }],
+        });
+
+      const writable = await fileHandle.createWritable();
+      await writable.write(json);
+      await writable.close();
+    } catch (err) {
+      if ((err as any).name !== 'AbortError') {
+        console.error('Save failed:', err);
+      }
+      // AbortError = user cancelled the dialog, safe to ignore
+    }
+    } else {
+    downloadFile(json, 'snapdraft-project.json', 'application/json');
+  }
 };
 
 const load = () => {
@@ -49,8 +84,9 @@ const load = () => {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       try {
+        clearScene();
         if (importFromJSON(content)) {
-          alert('Project loaded successfully!');
+          console.log('Project loaded successfully!');
         } else {
           alert('Failed to load project');
         }
@@ -69,7 +105,7 @@ const load = () => {
     <div class="toolbar-group">
       <button
         class="tool-btn"
-        :class="{ active: historyStore.canUndo() }"
+        :class="{ active: historyStore.canUndo }"
         @click="historyStore.undo()"
         title="Undo (Ctrl+Z)"
       >
@@ -77,7 +113,7 @@ const load = () => {
       </button>
       <button
         class="tool-btn"
-        :class="{ active: historyStore.canRedo() }"
+        :class="{ active: historyStore.canRedo }"
         @click="historyStore.redo()"
         title="Redo (Ctrl+Y)"
       >
@@ -161,13 +197,13 @@ const load = () => {
       >
         S
       </button>
-      <button
+      <!-- <button
         class="tool-btn view-btn"
         @click="$emit('view-preset', 'iso')"
         title="Isometric View"
       >
         I
-      </button>
+      </button> -->
     </div>
 
     <div class="toolbar-group">

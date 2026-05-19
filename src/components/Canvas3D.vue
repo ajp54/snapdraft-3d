@@ -29,6 +29,7 @@ const {
   updateGridHelper,
   updateXrayMode,
   syncWithStore,
+  updateMesh,
   mouseRef,
   raycasterRef,
 } = useScene3D(canvasRef);
@@ -37,8 +38,9 @@ const { selectMesh, clearSelection, updateOutline } = useSelection(
   meshMapRef
 );
 
+const orbitControlsRef = ref<OrbitControls | null>(null);
 const { snapPositionToGrid, checkFaceSnap } = useSnapping();
-const { setViewPreset, focusOnSelection } = useCamera(cameraRef, sceneRef);
+const { setViewPreset, focusOnSelection } = useCamera(cameraRef, sceneRef, orbitControlsRef);
 const { handleKeyDown } = useKeyboardShortcuts();
 
 let orbitControls: OrbitControls | null = null;
@@ -71,6 +73,8 @@ onMounted(() => {
     orbitControls.autoRotate = false;
     orbitControls.enableDamping = true;
     orbitControls.dampingFactor = 0.05;
+    orbitControlsRef.value = orbitControls;
+
 
     transformControls = new TransformControls(cameraRef.value, rendererRef.value.domElement) as TransformControls & Object3D;
     transformHelper = transformControls.getHelper();
@@ -84,6 +88,10 @@ onMounted(() => {
         orbitControls.enabled = !event.value;
       }
       isDraggingGizmo = event.value
+
+      if (event.value) {
+        historyStore.pushSnapshot();
+      }
     });
 
     transformControls.addEventListener('change', () => {
@@ -200,7 +208,7 @@ const handleMouseUp = (event: MouseEvent) => {
         transformControls.mode = 'rotate';
       }
     }
-    
+
     if (rendererRef.value && sceneRef.value && cameraRef.value) {
       rendererRef.value.render(sceneRef.value, cameraRef.value);
     }
@@ -224,9 +232,19 @@ const handleMouseUp = (event: MouseEvent) => {
   };
 });
 
-watch(() => sceneStore.placedParts.length, () => {
+// watch(() => sceneStore.placedParts.length, () => {
+//   syncWithStore();
+// });
+
+watch(() => sceneStore.placedParts, (parts) => {
+  parts.forEach((part) => {
+    const mesh = meshMapRef.value.get(part.id);
+    if (mesh) {
+      updateMesh(part);
+    }
+  });
   syncWithStore();
-});
+}, { deep: true, immediate: false });
 
 watch(() => sceneStore.selectedIds, () => {
   const selected = Array.from(sceneStore.selectedIds);
@@ -234,13 +252,11 @@ watch(() => sceneStore.selectedIds, () => {
     const mesh = meshMapRef.value.get(selected[0]);
     if (mesh) {
       transformControls.attach(mesh);
-      // transformControls.visible = settingsStore.transformMode !== 'select';
       updateTransformControlsVisibility();
       selectedPartForTransform = selected[0];
     }
   } else if (transformControls) {
     transformControls.detach();
-    // transformControls.visible = false;
     updateTransformControlsVisibility();
     selectedPartForTransform = null;
   }
@@ -270,10 +286,12 @@ const handleFocus = () => {
   const selected = Array.from(sceneStore.selectedIds)
     .map((id) => meshMapRef.value.get(id))
     .filter((m): m is THREE.Mesh => m !== undefined);
+
   if (selected.length > 0) {
     focusOnSelection(selected);
   }
 };
+
 </script>
 
 <template>
@@ -281,7 +299,7 @@ const handleFocus = () => {
     <canvas ref="canvasRef" class="canvas"></canvas>
     
     <!-- Toolbar -->
-    <Toolbar
+    <Toolbar :scene="sceneRef"
       @view-preset="handleViewPreset"
       @focus="handleFocus"
     />

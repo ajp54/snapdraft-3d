@@ -70,6 +70,10 @@ export function importFromJSON(json: string): boolean {
   }
 }
 
+function csvEscape(value: string): string {
+  return value.replace(/"/g, '""');
+}
+
 export function exportToCSV(): string {
   const partsBinStore = usePartsBinStore();
   const sceneStore = useSceneStore();
@@ -92,21 +96,21 @@ export function exportToCSV(): string {
     const def = partsBinStore.getPartDefinition(defId);
     if (!def) return;
 
-    const dims = `${def.dimensions.width}×${def.dimensions.height}×${def.dimensions.depth}"`;
+    const dims = `${def.dimensions.width}"x${def.dimensions.height}"x${def.dimensions.depth}"`;
     const unitPrice = def.unitPrice;
     const withWaste = quantity * (1 + settingsStore.wasteFactor / 100);
     const lineTotal = withWaste * unitPrice;
     totalCost += lineTotal;
 
     rows.push(
-      `"${def.name}","${def.category}","${dims}",${withWaste.toFixed(1)},$${unitPrice.toFixed(2)},$${lineTotal.toFixed(2)}`
+      `"${csvEscape(def.name)}","${csvEscape(def.category)}","${csvEscape(dims)}",${withWaste.toFixed(1)},$${unitPrice.toFixed(2)},$${lineTotal.toFixed(2)}`
     );
   });
 
   rows.push('');
   rows.push(`Total Cost,$${totalCost.toFixed(2)}`);
 
-  return rows.join('\n');
+  return '\uFEFF' + rows.join('\r\n');
 }
 
 export function downloadFile(content: string, filename: string, mimeType: string = 'text/plain'): void {

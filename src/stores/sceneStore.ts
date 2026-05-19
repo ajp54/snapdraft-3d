@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 import type { PlacedPart, Layer, Measurement } from './types';
+import { useHistoryStore } from './historyStore';
 
 export const useSceneStore = defineStore('scene', () => {
   const placedParts = ref<PlacedPart[]>([]);
@@ -30,6 +31,7 @@ export const useSceneStore = defineStore('scene', () => {
     position: [number, number, number] = [0, 0, 0],
     label?: string
   ): PlacedPart => {
+    useHistoryStore().pushSnapshot();
     const part: PlacedPart = {
       id: uuidv4(),
       definitionId,
@@ -46,11 +48,13 @@ export const useSceneStore = defineStore('scene', () => {
   };
 
   const deletePart = (id: string) => {
+    useHistoryStore().pushSnapshot();
     placedParts.value = placedParts.value.filter((p) => p.id !== id);
     selectedIds.value.delete(id);
   };
 
   const updatePart = (id: string, updates: Partial<PlacedPart>) => {
+    // useHistoryStore().pushSnapshot();
     const idx = placedParts.value.findIndex((p) => p.id === id);
     if (idx !== -1) {
       placedParts.value[idx] = { ...placedParts.value[idx], ...updates };
@@ -60,6 +64,7 @@ export const useSceneStore = defineStore('scene', () => {
   const duplicatePart = (id: string): PlacedPart | null => {
     const part = placedParts.value.find((p) => p.id === id);
     if (!part) return null;
+    useHistoryStore().pushSnapshot();
 
     const newPart: PlacedPart = {
       ...part,
@@ -91,6 +96,7 @@ export const useSceneStore = defineStore('scene', () => {
   };
 
   const addLayer = (name: string = 'New Layer'): Layer => {
+    useHistoryStore().pushSnapshot();
     const layer: Layer = {
       id: uuidv4(),
       name,
@@ -103,6 +109,7 @@ export const useSceneStore = defineStore('scene', () => {
   };
 
   const deleteLayer = (id: string) => {
+    useHistoryStore().pushSnapshot();
     if (id === defaultLayerId.value) return false;
     layers.value = layers.value.filter((l) => l.id !== id);
     // Move parts to default layer
@@ -155,6 +162,7 @@ export const useSceneStore = defineStore('scene', () => {
   const importScene = (json: string) => {
     try {
       const data = JSON.parse(json);
+      useHistoryStore().pushSnapshot();
       placedParts.value = data.parts || [];
       layers.value = data.layers || [];
       selectedIds.value = new Set(data.selectedIds || []);

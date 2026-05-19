@@ -59,6 +59,7 @@ export function useScene3D(canvasRefArg: any) {
   };
 
   const addPartToScene = (part: PlacedPart) => {
+    console.log('addPartToScene called for:', part.id, 'scene children before:', sceneRef.value?.children.length);
     const definition = partsBinStore.getPartDefinition(part.definitionId);
     if (!definition || !sceneRef.value) return;
 
@@ -73,16 +74,19 @@ export function useScene3D(canvasRefArg: any) {
     const mesh = createPartMesh(part, definition);
     meshMapRef.value.set(part.id, mesh);
     sceneRef.value.add(mesh);
+    console.log('added mesh, scene children now:', sceneRef.value?.children.length);
   };
 
   const removePartFromScene = (partId: string) => {
     if (!sceneRef.value) return;
     const mesh = meshMapRef.value.get(partId);
     if (mesh) {
-      sceneRef.value.remove(mesh);
-      mesh.geometry.dispose();
-      (mesh.material as THREE.Material).dispose();
+      mesh.removeFromParent();
       meshMapRef.value.delete(partId);
+      requestAnimationFrame(() => {
+        mesh.geometry.dispose();
+        (mesh.material as THREE.Material).dispose();
+      });
     }
   };
 
@@ -165,8 +169,9 @@ export function useScene3D(canvasRefArg: any) {
     }
 
     if (settingsStore.gridEnabled) {
-      const size = settingsStore.gridSize * 10;
-      const divisions = 10;
+      const gridTiles = 20;
+      const size = settingsStore.gridSize * gridTiles;
+      const divisions = gridTiles;
       const gridHelper = new THREE.GridHelper(size, divisions, 0x444444, 0x222222);
       gridHelper.position.y = -0.01;
       gridHelperRef.value = gridHelper;
@@ -180,11 +185,14 @@ export function useScene3D(canvasRefArg: any) {
     meshMapRef.value.forEach((mesh) => {
       const mat = mesh.material as THREE.MeshStandardMaterial;
       mat.transparent = settingsStore.xrayMode;
-      mat.opacity = settingsStore.xrayMode ? 0.2 : 1;
+      mat.opacity = settingsStore.xrayMode ? 0.3 : 1;
+      mat.needsUpdate = true;
     });
   };
 
   const syncWithStore = () => {
+    console.log('store parts:', sceneStore.placedParts.map(p => p.id));
+    console.log('mesh map:', Array.from(meshMapRef.value.keys()));
     const existingIds = new Set(meshMapRef.value.keys());
     const storeIds = new Set(sceneStore.placedParts.map((p) => p.id));
 

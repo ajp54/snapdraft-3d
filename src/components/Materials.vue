@@ -71,7 +71,7 @@ const exportCSV = () => {
           <div class="col-name">Part</div>
           <div class="col-qty">Qty</div>
           <div class="col-price">Unit Price</div>
-          <div class="col-total">Total</div>
+          <!-- <div class="col-total">Total</div> -->
         </div>
 
         <div v-if="partStats.length === 0" class="table-empty">
@@ -82,7 +82,7 @@ const exportCSV = () => {
           <div class="col-name">{{ stat.definition.name }}</div>
           <div class="col-qty">{{ stat.quantity }}</div>
           <div class="col-price">{{ formatCurrency(stat.definition.unitPrice) }}</div>
-          <div class="col-total">{{ formatCurrency(stat.total) }}</div>
+          <!-- <div class="col-total">{{ formatCurrency(stat.total) }}</div> -->
         </div>
       </div>
 
@@ -168,7 +168,7 @@ const exportCSV = () => {
 
 .table-header {
   display: grid;
-  grid-template-columns: 1fr 60px 90px 80px;
+  grid-template-columns: 1fr 30px 75px;
   gap: 8px;
   padding: 8px;
   background: #1a1a1a;
@@ -182,7 +182,7 @@ const exportCSV = () => {
 
 .table-row {
   display: grid;
-  grid-template-columns: 1fr 60px 90px 80px;
+  grid-template-columns: 1fr 25px 75px;
   gap: 8px;
   padding: 8px;
   border-bottom: 1px solid #333;

@@ -1,0 +1,606 @@
+// ============================================================================
+// COMMON UI CONTROLS & BUTTON STYLES
+// Consolidated button, form control, and reusable UI element styles
+// ============================================================================
+
+// ---- BUTTON BASE STYLES ----
+
+button {
+  @include button-reset;
+}
+
+// ---- PRIMARY ACTION BUTTONS ----
+
+.add-btn,
+.export-btn {
+  @include button-reset;
+  padding: $space-sm $space-md;
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: var(--color-accent-hover);
+  }
+}
+
+// ---- GENERIC BUTTON STYLES ----
+
+.btn {
+  @include button-reset;
+  padding: $space-md $space-lg;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+
+  &.btn-primary {
+    background: var(--color-accent);
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: var(--color-accent-hover);
+    }
+
+    &:disabled {
+      @include disabled;
+    }
+  }
+
+  &.btn-secondary {
+    background: var(--color-border);
+    color: var(--color-text-primary);
+
+    &:hover {
+      background: var(--color-border);
+      opacity: 0.8;
+    }
+  }
+
+  &.btn-danger {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--color-danger);
+
+    &:hover {
+      background: rgba(255, 107, 107, 0.25);
+    }
+  }
+}
+
+// Modal footer buttons - larger sizing
+.modal-footer {
+  .btn {
+    padding: $space-md $space-2xl;
+    font-size: $font-size-base;
+  }
+}
+
+// ---- ICON BUTTONS ----
+
+.tool-btn {
+  @include button-reset;
+  width: 32px;
+  height: 32px;
+  border: $border-width-thin solid var(--color-border);
+  background: var(--color-background);
+  border-radius: $border-radius-md;
+  color: var(--color-text-secondary);
+  font-size: $font-size-base;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
+  font-weight: $font-weight-semibold;
+
+  &:hover {
+    border-color: var(--color-text-secondary);
+    color: var(--color-text-primary);
+    background: var(--color-hover);
+  }
+
+  &.active {
+    border-color: var(--color-accent);
+    background: rgba(74, 144, 226, 0.15);
+    color: var(--color-accent);
+
+    &:hover {
+      background: rgba(74, 144, 226, 0.25);
+    }
+  }
+}
+
+.close-btn {
+  @include button-reset;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.expand-btn,
+.visibility-btn,
+.lock-btn {
+  @include button-reset;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: $font-size-sm;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+.visibility-btn,
+.lock-btn {
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &.hidden,
+  &.locked {
+    opacity: 1;
+    color: var(--color-danger);
+  }
+}
+
+.action-btn {
+  @include button-reset;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
+
+  &.place-btn {
+    background: rgba(81, 207, 102, 0.15);
+    color: var(--color-success);
+
+    &:hover {
+      background: rgba(81, 207, 102, 0.3);
+    }
+  }
+
+  &.delete-btn {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--color-danger);
+
+    &:hover:not(:disabled) {
+      background: rgba(255, 107, 107, 0.3);
+    }
+
+    &:disabled {
+      @include disabled;
+    }
+  }
+}
+
+// ---- PANEL & TAB BUTTONS ----
+
+.tab-btn {
+  @include button-reset;
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: $border-width-medium solid transparent;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: var(--color-text-primary);
+    background: var(--color-hover);
+  }
+
+  &.active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    background: transparent;
+  }
+}
+
+// ---- FORM CONTROL BASE STYLES ----
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+input[type='text'],
+input[type='number'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='url'],
+textarea,
+select {
+  padding: $space-sm;
+  border: $border-width-thin solid var(--color-border);
+  border-radius: $border-radius-md;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+
+  &:disabled {
+    @include disabled;
+    background-color: var(--color-border);
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+// ---- INPUT WRAPPERS & FORM GROUPS ----
+
+.input-group {
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  margin-bottom: $space-sm;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  label {
+    width: 30px;
+    color: var(--color-text-secondary);
+    font-size: $font-size-sm;
+    flex-shrink: 0;
+  }
+
+  input {
+    flex: 1;
+    padding: $space-sm;
+    background: var(--color-background);
+    border: $border-width-thin solid var(--color-border);
+    border-radius: $border-radius-md;
+    color: var(--color-text-primary);
+    font-size: $font-size-sm;
+    min-width: 0;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: $space-lg;
+
+  label {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    margin-bottom: $space-sm;
+    letter-spacing: 0.5px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: $space-sm;
+    background: var(--color-background);
+    border: $border-width-thin solid var(--color-border);
+    border-radius: $border-radius-md;
+    color: var(--color-text-primary);
+    font-size: $font-size-base;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $space-lg;
+}
+
+// ---- SPECIALIZED INPUT STYLES ----
+
+.step-btn {
+  padding: 4px $space-sm;
+  background: rgba(74, 144, 226, 0.15);
+  border: $border-width-thin solid var(--color-accent);
+  border-radius: $border-radius-md;
+  color: var(--color-accent);
+  font-size: $font-size-xs;
+  cursor: pointer;
+  transition: all $transition-fast;
+  flex-shrink: 0;
+  @include button-reset;
+
+  &:hover {
+    background: rgba(74, 144, 226, 0.25);
+  }
+}
+
+.color-input-wrapper {
+  display: flex;
+  gap: $space-md;
+  align-items: center;
+
+  input[type='color'] {
+    width: 50px;
+    height: 36px;
+    cursor: pointer;
+    padding: 2px;
+    border: $border-width-thin solid var(--color-border);
+    border-radius: $border-radius-md;
+  }
+
+  span {
+    color: var(--color-text-secondary);
+    font-size: $font-size-sm;
+    flex: 1;
+  }
+}
+
+.layer-select {
+  width: 100%;
+  padding: $space-sm;
+  background: var(--color-background);
+  border: $border-width-thin solid var(--color-border);
+  border-radius: $border-radius-md;
+  color: var(--color-text-primary);
+  font-size: $font-size-sm;
+  font-family: inherit;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  }
+}
+
+.rename-input-wrapper {
+  flex: 1;
+  min-width: 0;
+
+  .rename-input {
+    width: 100%;
+    padding: 4px;
+    background: var(--color-background);
+    border: $border-width-thin solid var(--color-accent);
+    border-radius: $border-radius-sm;
+    color: var(--color-text-primary);
+    font-size: $font-size-sm;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+// ---- MODAL COMPONENT STYLES ----
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal;
+}
+
+.modal-content {
+  background: var(--color-surface);
+  border-radius: $border-radius-xl;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: $shadow-xl;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $space-2xl;
+  border-bottom: $border-width-thin solid var(--color-border);
+
+  h2 {
+    margin: 0;
+    font-size: $font-size-2xl;
+    color: var(--color-text-primary);
+  }
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: $space-2xl;
+}
+
+.modal-footer {
+  display: flex;
+  gap: $space-md;
+  justify-content: flex-end;
+  padding: $space-2xl;
+  border-top: $border-width-thin solid var(--color-border);
+}
+
+// ---- PRESET CARDS ----
+
+.preset-card {
+  @include button-reset;
+  background: var(--color-background);
+  border: $border-width-medium solid var(--color-border);
+  border-radius: $border-radius-lg;
+  padding: $space-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-align: left;
+
+  &:hover {
+    border-color: var(--color-text-secondary);
+    background: var(--color-hover);
+  }
+
+  &.active {
+    border-color: var(--color-accent);
+    background: rgba(74, 144, 226, 0.15);
+  }
+
+  .preset-name {
+    color: var(--color-text-primary);
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    margin-bottom: 4px;
+  }
+
+  .preset-dims {
+    color: var(--color-text-secondary);
+    font-size: $font-size-xs;
+    margin-bottom: 4px;
+  }
+
+  .preset-price {
+    color: var(--color-accent);
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// ---- CONTEXT MENUS ----
+
+.context-menu {
+  position: fixed;
+  background: var(--color-surface);
+  border: $border-width-thin solid var(--color-border);
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-lg;
+  z-index: $z-modal;
+  min-width: 150px;
+  overflow: hidden;
+
+  button {
+    @include button-reset;
+    width: 100%;
+    padding: $space-md $space-lg;
+    background: none;
+    border: none;
+    color: var(--color-text-primary);
+    text-align: left;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: var(--color-hover);
+      color: var(--color-accent);
+    }
+
+    &.danger {
+      color: var(--color-danger);
+
+      &:hover {
+        background: rgba(255, 107, 107, 0.1);
+      }
+    }
+  }
+}
+
+// ---- CATEGORY HEADERS ----
+
+.category-header {
+  @include button-reset;
+  width: 100%;
+  background: var(--color-surface);
+  border: none;
+  padding: $space-md $space-lg;
+  text-align: left;
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: $space-sm;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: var(--color-hover);
+    color: var(--color-text-primary);
+  }
+
+  .arrow {
+    font-size: $font-size-xs;
+    min-width: 16px;
+  }
+
+  .category-name {
+    flex: 1;
+    letter-spacing: 0.5px;
+  }
+}

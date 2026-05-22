@@ -166,6 +166,7 @@ const addPart = () => {
 </template>
 
 <style scoped>
+/* Modal and button styles moved to _ui-controls.scss
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -382,4 +383,5 @@ select:focus {
   opacity: 0.5;
   cursor: not-allowed;
 }
+*/
 </style>

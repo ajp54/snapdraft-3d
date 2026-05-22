@@ -1,0 +1,40 @@
+// ============================================================================
+// PANEL COMPONENTS STYLES (LeftPanel, RightPanel, CenterPanel)
+// ============================================================================
+
+// ---- PANEL CONTAINERS ----
+
+.left-panel,
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-background);
+  border-right: $border-width-thin solid var(--color-border);
+}
+
+.right-panel {
+  border-right: none;
+  border-left: $border-width-thin solid var(--color-border);
+}
+
+.center-panel {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: var(--color-background);
+}
+
+// ---- PANEL TABS ----
+
+.panel-tabs {
+  display: flex;
+  border-bottom: $border-width-thin solid var(--color-border);
+  background: var(--color-background);
+  // .tab-btn styles moved to _ui-controls.scss
+}
+
+.panel-content {
+  flex: 1;
+  overflow: hidden;
+}

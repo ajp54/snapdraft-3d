@@ -1,0 +1,49 @@
+// ============================================================================
+// SETTINGS BAR COMPONENT STYLES
+// ============================================================================
+
+.settings-bar {
+  position: absolute;
+  bottom: $space-lg;
+  left: $space-lg;
+  right: $space-lg;
+  background: var(--color-surface);
+  border: $border-width-thin solid var(--color-border);
+  border-radius: $border-radius-lg;
+  padding: $space-md;
+  display: flex;
+  gap: $space-lg;
+  z-index: $z-fixed;
+  box-shadow: $shadow-lg;
+
+  .settings-group {
+    display: flex;
+    align-items: center;
+    gap: $space-sm;
+
+    label {
+      color: var(--color-text-secondary);
+      font-size: $font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    select {
+      padding: $space-sm;
+      background: var(--color-background);
+      border: $border-width-thin solid var(--color-border);
+      border-radius: $border-radius-md;
+      color: var(--color-text-primary);
+      font-size: $font-size-sm;
+      cursor: pointer;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+      }
+    }
+  }
+}

@@ -133,6 +133,7 @@ const toggleCategory = (category: string) => {
   font-size: 16px;
 }
 
+/* Button styles moved to _ui-controls.scss
 .add-btn {
   background: #4A90E2;
   color: #fff;
@@ -147,16 +148,6 @@ const toggleCategory = (category: string) => {
 
 .add-btn:hover {
   background: #357abd;
-}
-
-.parts-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0;
-}
-
-.category-section {
-  border-bottom: 1px solid #333;
 }
 
 .category-header {
@@ -189,6 +180,43 @@ const toggleCategory = (category: string) => {
   flex: 1;
   letter-spacing: 0.5px;
 }
+
+.action-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.place-btn {
+  background: #2a5a3a;
+  color: #6fd97f;
+}
+
+.place-btn:hover {
+  background: #3a7a4a;
+}
+
+.delete-btn {
+  background: #5a2a2a;
+  color: #d97f7f;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #7a3a3a;
+}
+
+.delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+*/
 
 .category-parts {
   padding: 8px;
@@ -269,6 +297,7 @@ const toggleCategory = (category: string) => {
   gap: 4px;
 }
 
+/* Action button styles moved to _ui-controls.scss
 .action-btn {
   width: 24px;
   height: 24px;
@@ -304,4 +333,5 @@ const toggleCategory = (category: string) => {
   opacity: 0.5;
   cursor: not-allowed;
 }
+*/
 </style>

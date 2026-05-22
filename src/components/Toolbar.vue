@@ -258,6 +258,7 @@ const load = () => {
   border-right: none;
 }
 
+/* Button styles moved to _ui-controls.scss
 .tool-btn {
   width: 32px;
   height: 32px;
@@ -289,6 +290,7 @@ const load = () => {
 .tool-btn.active:hover {
   background: #2a4a7a;
 }
+*/
 
 .toolbar-spacer {
   flex: 1;

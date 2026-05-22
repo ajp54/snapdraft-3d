@@ -1,0 +1,126 @@
+@import './_ui-controls.scss';
+
+// ============================================================================
+// GLOBAL BASE STYLES
+// ============================================================================
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family-sans;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+  transition: background-color $transition-normal, color $transition-normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+}
+
+h1 {
+  font-size: $font-size-3xl;
+}
+
+h2 {
+  font-size: $font-size-2xl;
+}
+
+h3 {
+  font-size: $font-size-xl;
+}
+
+h4 {
+  font-size: $font-size-lg;
+}
+
+h5 {
+  font-size: $font-size-base;
+}
+
+h6 {
+  font-size: $font-size-sm;
+}
+
+p {
+  margin: 0;
+}
+
+// Links
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Form controls moved to _ui-controls.scss
+
+// Code
+code,
+pre {
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  background-color: var(--color-surface);
+  border-radius: $border-radius-sm;
+  color: var(--color-text-secondary);
+}
+
+code {
+  padding: 2px 6px;
+}
+
+pre {
+  padding: $space-md;
+  overflow-x: auto;
+
+  code {
+    background-color: transparent;
+    padding: 0;
+  }
+}
+
+// Lists
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Horizontal rule
+hr {
+  border: none;
+  border-top: $border-width-thin solid var(--color-border);
+  margin: $space-lg 0;
+}
+
+// Selection
+::selection {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+// Scrollbar (global default)
+html {
+  @include custom-scrollbar(
+    var(--color-background),
+    var(--color-border)
+  );
+}

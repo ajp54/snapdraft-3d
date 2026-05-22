@@ -1,0 +1,28 @@
+// ============================================================================
+// DARK THEME (DEFAULT)
+// ============================================================================
+
+:root,
+.dark {
+  // Background & Surface
+  --color-background: #1a1a1a;
+  --color-surface: #222;
+  --color-border: #333;
+
+  // Text
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #a0a0a0;
+  --color-text-muted: #666;
+
+  // Semantic Colors
+  --color-accent: #4a90e2;
+  --color-accent-hover: #357abd;
+  --color-success: #51cf66;
+  --color-danger: #ff6b6b;
+  --color-warning: #ffd93d;
+
+  // Component-specific
+  --color-input-background: #2a2a2a;
+  --color-hover: rgba(255, 255, 255, 0.05);
+  --color-active: rgba(255, 255, 255, 0.1);
+}

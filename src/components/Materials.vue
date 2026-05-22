@@ -301,6 +301,7 @@ const exportCSV = () => {
   margin: 8px 0;
 }
 
+/* Button styles moved to _ui-controls.scss
 .export-btn {
   padding: 10px;
   background: #2a5a5a;
@@ -318,4 +319,5 @@ const exportCSV = () => {
   background: #3a7a7a;
   color: #fff;
 }
+*/
 </style>

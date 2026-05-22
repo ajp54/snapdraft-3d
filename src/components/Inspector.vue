@@ -335,6 +335,7 @@ const deletePart = () => {
   text-align: right;
 }
 
+/* Form control styles moved to _ui-controls.scss
 .input-group {
   display: flex;
   align-items: center;
@@ -470,4 +471,5 @@ const deletePart = () => {
 .btn-danger:hover {
   background: #7a3a3a;
 }
+*/
 </style>

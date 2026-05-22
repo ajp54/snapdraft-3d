@@ -47,6 +47,7 @@ const activeTab = ref<'bin' | 'tree'>('bin');
   background: #0a0a0a;
 }
 
+/* Button styles moved to _ui-controls.scss
 .tab-btn {
   flex: 1;
   padding: 12px;
@@ -72,6 +73,7 @@ const activeTab = ref<'bin' | 'tree'>('bin');
   border-bottom-color: #4A90E2;
   background: #1a1a1a;
 }
+*/
 
 .panel-content {
   flex: 1;

@@ -312,6 +312,7 @@ const getPartDefinitionName = (definitionId: string) => {
   font-size: 16px;
 }
 
+/* Button styles moved to _ui-controls.scss
 .add-btn {
   background: #4A90E2;
   color: #fff;
@@ -326,42 +327,6 @@ const getPartDefinitionName = (definitionId: string) => {
 
 .add-btn:hover {
   background: #357abd;
-}
-
-.tree-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0;
-}
-
-.layer-group {
-  border-bottom: 1px solid #333;
-}
-
-.layer-row {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  background: #222;
-  border-bottom: 1px solid #333;
-  gap: 4px;
-}
-
-.part-row {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  gap: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.part-row:hover {
-  background: #252525;
-}
-
-.part-row.selected {
-  background: #1e3a5f;
 }
 
 .expand-btn {
@@ -411,6 +376,95 @@ const getPartDefinitionName = (definitionId: string) => {
   color: #f44336;
 }
 
+.rename-input-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.rename-input {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #4A90E2;
+  border-radius: 3px;
+  color: #fff;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.rename-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+}
+
+.context-menu {
+  position: fixed;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  z-index: 1000;
+  min-width: 160px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.context-menu button {
+  width: 100%;
+  border: none;
+  background: none;
+  color: #ccc;
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.context-menu button:hover {
+  background: #333;
+  color: #fff;
+}
+
+.context-menu button.danger:hover {
+  background: #5a2a2a;
+  color: #ff6b6b;
+}
+*/
+
+.tree-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.layer-group {
+  border-bottom: 1px solid #333;
+}
+
+.layer-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #222;
+  border-bottom: 1px solid #333;
+  gap: 4px;
+}
+
+.part-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.part-row:hover {
+  background: #252525;
+}
+
+.part-row.selected {
+  background: #1e3a5f;
+}
+
 .color-swatch {
   width: 16px;
   height: 16px;
@@ -445,26 +499,6 @@ const getPartDefinitionName = (definitionId: string) => {
   flex-shrink: 0;
 }
 
-.rename-input-wrapper {
-  flex: 1;
-  min-width: 0;
-}
-
-.rename-input {
-  width: 100%;
-  background: #1a1a1a;
-  border: 1px solid #4A90E2;
-  border-radius: 3px;
-  color: #fff;
-  padding: 4px 6px;
-  font-size: 12px;
-}
-
-.rename-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
-}
-
 .menu-btn {
   width: 24px;
   height: 24px;
@@ -492,38 +526,6 @@ const getPartDefinitionName = (definitionId: string) => {
 
 .layer-parts {
   background: #1a1a1a;
-}
-
-.context-menu {
-  position: fixed;
-  background: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 6px;
-  z-index: 1000;
-  min-width: 160px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-}
-
-.context-menu button {
-  width: 100%;
-  border: none;
-  background: none;
-  color: #ccc;
-  padding: 8px 12px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.context-menu button:hover {
-  background: #333;
-  color: #fff;
-}
-
-.context-menu button.danger:hover {
-  background: #5a2a2a;
-  color: #ff6b6b;
 }
 
 .menu-divider {

@@ -1,0 +1,36 @@
+// ============================================================================
+// TOOLBAR COMPONENT STYLES
+// ============================================================================
+
+.toolbar {
+  position: absolute;
+  top: $space-lg;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-surface);
+  border: $border-width-thin solid var(--color-border);
+  border-radius: $border-radius-lg;
+  padding: $space-sm;
+  display: flex;
+  gap: $space-sm;
+  align-items: center;
+  z-index: $z-fixed;
+  box-shadow: $shadow-lg;
+
+  .toolbar-group {
+    display: flex;
+    gap: $border-radius-sm;
+    padding-right: $space-lg;
+    border-right: $border-width-thin solid var(--color-border);
+
+    &:last-of-type {
+      padding-right: 0;
+      border-right: none;
+    }
+    // .tool-btn styles moved to _ui-controls.scss
+  }
+
+  .toolbar-spacer {
+    flex: 1;
+  }
+}

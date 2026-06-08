@@ -30,7 +30,7 @@
 .panel-tabs {
   display: flex;
   border-bottom: $border-width-thin solid var(--color-border);
-  background: var(--color-background);
+  background: var(--color-surface);
   // .tab-btn styles moved to _ui-controls.scss
 }
 

@@ -13,11 +13,4 @@ const emit = defineEmits<{
   </div>
 </template>
 
-<style scoped>
-.center-panel {
-  position: relative;
-  flex: 1;
-  overflow: hidden;
-  background: #0a0a0a;
-}
-</style>
+

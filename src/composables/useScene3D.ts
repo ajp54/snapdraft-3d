@@ -99,7 +99,8 @@ export function useScene3D(canvasRefArg: any) {
 
     // Scene setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1a1a);
+    const bgColor = getComputedStyle(canvas).getPropertyValue('--color-canvas').trim() || '#0a0a0a';
+    scene.background = new THREE.Color(bgColor);
     sceneRef.value = scene;
 
     // Camera setup

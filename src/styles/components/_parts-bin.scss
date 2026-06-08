@@ -52,7 +52,6 @@
 
     &:hover {
       border-color: var(--color-accent);
-      background: var(--color-hover);
     }
   }
 
@@ -74,7 +73,7 @@
       min-width: 0;
 
       .part-name {
-        color: var(--color-text-primary);
+        color: var(--color-text-secondary);
         font-size: $font-size-sm;
         font-weight: $font-weight-medium;
         margin-bottom: 2px;

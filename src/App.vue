@@ -12,7 +12,7 @@ import RightPanel from './components/RightPanel.vue';
 </script>
 
 <template>
-  <div class="app dark">
+  <div class="app light">
     <LeftPanel />
     <CenterPanel />
     <RightPanel />

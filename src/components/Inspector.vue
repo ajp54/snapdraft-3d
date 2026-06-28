@@ -5,7 +5,7 @@ import { usePartsBinStore } from '../stores/partsBinStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { useHistoryStore } from '../stores/historyStore';
 import { formatDimension } from '../utils/unitConversion';
-import { degreesToRadians, radiansToDegrees } from '../utils/math';
+import { radiansToDegrees } from '../utils/math';
 
 const sceneStore = useSceneStore();
 const partsBinStore = usePartsBinStore();

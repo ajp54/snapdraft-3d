@@ -4,7 +4,7 @@ import type { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js
 
 export function useCamera(
   cameraRef: { value: THREE.PerspectiveCamera | null },
-  sceneRef: { value: THREE.Scene | null },
+  _sceneRef: { value: THREE.Scene | null },
   orbitControlsRef: { value: OrbitControls | null }  // ← add this
 ) {
   const cameraDistance = ref(150);

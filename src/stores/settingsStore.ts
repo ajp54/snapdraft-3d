@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 
 export type TransformMode = 'select' | 'move' | 'rotate';
 export type Unit = 'in' | 'ft' | 'mm';
-export type SnapIncrement =  0.25 | 0.5 | 1 | 6 | 12;
+export type SnapIncrement =  1 | 3 | 6 | 12;
 
 export const useSettingsStore = defineStore('settings', () => {
   const snapEnabled = ref(true);

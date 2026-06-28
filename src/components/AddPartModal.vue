@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { usePartsBinStore } from '../stores/partsBinStore';
 import { useSettingsStore } from '../stores/settingsStore';
 import { formatDimension } from '../utils/unitConversion';
@@ -65,13 +65,13 @@ const selectPreset = (preset: PartDefinition) => {
 const addPart = () => {
   if (!name.value.trim()) return;
 
-  const id = partsBinStore.addPartDefinition(
-    name.value,
-    category.value,
-    { width: width.value, height: height.value, depth: depth.value },
-    unitPrice.value,
-    color.value
-  );
+  // const id = partsBinStore.addPartDefinition(
+  //   name.value,
+  //   category.value,
+  //   { width: width.value, height: height.value, depth: depth.value },
+  //   unitPrice.value,
+  //   color.value
+  // );
 
   closeModal();
 };
